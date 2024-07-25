@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rss/AppInfoProvider.dart';
+import 'package:flutter_rss/constants.dart';
 import 'package:flutter_rss/routes/RouteUtils.dart';
 import 'package:flutter_rss/routes/routes.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:provider/provider.dart';
 
 Size get designSize {
   final firstView = WidgetsBinding.instance.platformDispatcher.views.first;
@@ -18,7 +21,10 @@ Size get designSize {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+
+  // const MyApp({super.key});
+
+  Color? _themeColor;
 
   // This widget is the root of your application.
   @override
@@ -26,16 +32,29 @@ class MyApp extends StatelessWidget {
     return OKToast(child: ScreenUtilInit(
       designSize: designSize,
       builder: (context, child) {
-        return MaterialApp(
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
-          navigatorKey: RouteUtils.navigatorKey,
-          onGenerateRoute: Routes.generateRoute,
-          initialRoute: RoutePath.home,
-        );
+        return MultiProvider(providers: [
+          ChangeNotifierProvider.value(value: AppInfoProvider())
+        ],
+        child: Consumer<AppInfoProvider>(
+          builder: (context, vm, child) {
+            String colorKey = vm.themeColor;
+            if (Constants.themeColorMap[colorKey] != null) {
+              _themeColor = Constants.themeColorMap[colorKey];
+            }
+            return MaterialApp(
+              title: 'Flutter Demo',
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: _themeColor ?? Colors.purple),
+                primaryColor: _themeColor,
+                floatingActionButtonTheme: FloatingActionButtonThemeData(backgroundColor: _themeColor),
+                useMaterial3: true,
+              ),
+              navigatorKey: RouteUtils.navigatorKey,
+              onGenerateRoute: Routes.generateRoute,
+              initialRoute: RoutePath.splash,
+            );
+          },
+        ),);
       },
     ));
   }

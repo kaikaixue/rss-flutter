@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_rss/pages/auth/login_page.dart';
+import 'package:flutter_rss/pages/auth/register_page.dart';
 import 'package:flutter_rss/pages/home_page.dart';
+import 'package:flutter_rss/splash_page.dart';
 
 class Routes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RoutePath.home:
-        return pageRoute(HomePage(), settings: settings);
+        return pageRoute(const HomePage(), settings: settings);
+      case RoutePath.splash:
+        return pageRoute(const SplashPage(), settings: settings);
+      case RoutePath.loginPage:
+        return pageRoute(const LoginPage(), settings: settings);
+      case RoutePath.registerPage:
+        return pageRoute(const RegisterPage(), settings: settings);
     }
 
     return pageRoute(Scaffold(
@@ -33,5 +42,8 @@ class Routes {
 }
 
 class RoutePath {
-  static const String home = '/';
+  static const String splash = '/';
+  static const String home = '/home';
+  static const String loginPage = '/login_page';
+  static const String registerPage = '/register_page';
 }
