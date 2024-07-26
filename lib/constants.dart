@@ -22,4 +22,8 @@ class Constants {
     'black': Colors.black,
   };
 
+  static const String SP_COOKIE_List = "SP_COOKIE_List";
+
+  static const String TOKEN = "token";
+
 }
