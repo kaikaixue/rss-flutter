@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rss/pages/auth/auth_vm.dart';
 import 'package:flutter_rss/pages/auth/login_page.dart';
 import 'package:flutter_rss/routes/RouteUtils.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class SidebarMenu extends StatefulWidget {
   const SidebarMenu({super.key});
@@ -14,6 +16,14 @@ class SidebarMenu extends StatefulWidget {
 }
 
 class _SidebarMenuState extends State<SidebarMenu> {
+  AuthViewModel authViewModel = AuthViewModel();
+
+  @override
+  void initState() {
+    super.initState();
+    authViewModel.initData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -49,34 +59,50 @@ class _SidebarMenuState extends State<SidebarMenu> {
   }
 
   Widget _header(GestureTapCallback? onTap) {
-    return Container(
-      color: Theme.of(context).colorScheme.primary,
-      alignment: Alignment.center,
-      height: 200.h,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: onTap,
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(35.r)),
-              child: Image.asset(
-                "assets/images/logo.png",
-                width: 70.r,
-                height: 70.r,
-                fit: BoxFit.fill,
-              ),
-            ),
-          ),
-          SizedBox(height: 10.h),
-          GestureDetector(
-            onTap: onTap,
-            child: const Text(
-              '登录',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
+    return ChangeNotifierProvider(
+      create: (context) {
+        return authViewModel;
+      },
+      child: Container(
+        color: Theme.of(context).colorScheme.primary,
+        alignment: Alignment.center,
+        height: 200.h,
+        child: Consumer<AuthViewModel>(
+          builder: (context, vm, child) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: onTap,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(35.r)),
+                    child: vm.userInfo?['avatar'] != null
+                        ? Image.network(
+                            vm.userInfo?['avatar'],
+                            width: 70.r,
+                            height: 70.r,
+                            fit: BoxFit.fill,
+                          )
+                        : Image.asset(
+                            "assets/images/logo.png",
+                            width: 70.r,
+                            height: 70.r,
+                            fit: BoxFit.fill,
+                          ),
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                GestureDetector(
+                  onTap: onTap,
+                  child: Text(
+                    vm.username ?? '',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

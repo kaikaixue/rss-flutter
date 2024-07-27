@@ -6,11 +6,23 @@ class LoginApi {
 
   LoginApi._();
 
-  Future<Map<String, dynamic>> login({String? username, String? password}) async {
-    Response response = await DioInstance.instance().post(path: "app/auth/login", data: {
-      "username": username,
-      "password": password
-    });
+  Future<Map<String, dynamic>> login(
+      {String? username, String? password}) async {
+    Response response = await DioInstance.instance().post(
+        path: "app/auth/login",
+        data: {"username": username, "password": password});
+    return response.data;
+  }
+
+  Future<dynamic> register(
+      {String? username, String? password, String? repassword}) async {
+    Response response = await DioInstance.instance().post(
+        path: "app/auth/register",
+        data: {
+          "username": username,
+          "password": password,
+          "repassword": repassword
+        });
     return response.data;
   }
 }

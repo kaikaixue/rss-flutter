@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_rss/pages/auth/login_page.dart';
 import 'package:flutter_rss/pages/auth/register_page.dart';
+import 'package:flutter_rss/pages/feed/feed_page.dart';
 import 'package:flutter_rss/pages/home_page.dart';
 import 'package:flutter_rss/splash_page.dart';
 
@@ -16,6 +17,8 @@ class Routes {
         return pageRoute(const LoginPage(), settings: settings);
       case RoutePath.registerPage:
         return pageRoute(const RegisterPage(), settings: settings);
+      case RoutePath.feedPage:
+        return pageRoute(const FeedPage(), settings: settings);
     }
 
     return pageRoute(Scaffold(
@@ -46,4 +49,5 @@ class RoutePath {
   static const String home = '/home';
   static const String loginPage = '/login_page';
   static const String registerPage = '/register_page';
+  static const String feedPage = '/feed_page';
 }
