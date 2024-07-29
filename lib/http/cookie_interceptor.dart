@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -11,10 +12,13 @@ class CookieInterceptor extends Interceptor{
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     SpUtils.getStringList(Constants.SP_COOKIE_List).then((cookieList) {
       options.headers[HttpHeaders.cookieHeader] = cookieList;
-      String token = SpUtils.getString(Constants.TOKEN).toString();
-      print(token);
-      options.headers[HttpHeaders.authorizationHeader] = "Bearer" + token;
-      handler.next(options);
+      String token;
+      SpUtils.getString(Constants.TOKEN).then((value) {
+        token = value;
+        options.headers[HttpHeaders.authorizationHeader] = "Bearer $token";
+        handler.next(options);
+      });
+
     });
   }
 

@@ -5,15 +5,36 @@ import 'package:flutter_rss/repository/feed_model.dart';
 import 'package:oktoast/oktoast.dart';
 
 class FeedViewModel with ChangeNotifier {
-
   FeedModel? feedModel;
+  RssInfo rssInfo = RssInfo();
 
-  Future<bool?> analysisRssUrl(String url) async {
+  Future<RssInfo?> analysisRssUrl(String url) async {
     if (url.contains("http")) {
       feedModel = await FeedApi.instance.analysisRssUrl(url);
-      return true;
+      setRssInfo(
+          title: feedModel?.feedTitle,
+          url: feedModel?.feedUrl,
+          description: feedModel?.feedDescription,
+          logoUrl: feedModel?.feedLogo);
+      notifyListeners();
+      return rssInfo;
     }
     showToast("请输入正确的订阅源地址");
-    return false;
+    return null;
   }
+
+  void setRssInfo(
+      {String? title, String? url, String? description, String? logoUrl}) {
+    rssInfo.title = title;
+    rssInfo.url = url;
+    rssInfo.description = description;
+    rssInfo.logoUrl = logoUrl;
+  }
+}
+
+class RssInfo {
+  String? title;
+  String? url;
+  String? description;
+  String? logoUrl;
 }

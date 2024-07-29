@@ -1,4 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_rss/common_ui/loading.dart';
+import 'package:flutter_rss/pages/auth/login_page.dart';
+import 'package:flutter_rss/routes/RouteUtils.dart';
 import 'package:oktoast/oktoast.dart';
 
 import 'base_model.dart';
@@ -17,8 +21,10 @@ class ResponseInterceptor extends Interceptor {
             handler.next(Response(requestOptions: response.requestOptions, data: rsp.data));
           }
         } else if (rsp.code == 401) {
+          Loading.dismissAll();
           handler.reject(DioException(requestOptions: response.requestOptions, message: '未登录'));
           showToast('请先登录');
+          RouteUtils.push(RouteUtils.context, const LoginPage());
         } else {
           showToast(rsp.msg ?? "");
           if (rsp.data == null) {

@@ -34,7 +34,7 @@ class AuthViewModel with ChangeNotifier {
       Map<String, dynamic> map = await LoginApi.instance.login(
           username: loginInfo.username, password: loginInfo.password);
       if (map['token'] != null) {
-        SpUtils.saveString(Constants.TOKEN, map['token']!);
+        SpUtils.saveString(Constants.TOKEN, map['token']);
         SpUtils.saveString(Constants.USER_INFO, jsonEncode(map['userInfo']));
       }
       showToast("登录成功");

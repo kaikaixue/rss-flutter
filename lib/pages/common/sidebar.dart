@@ -27,34 +27,35 @@ class _SidebarMenuState extends State<SidebarMenu> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _header(() {
-              RouteUtils.push(context, const LoginPage());
-            }),
-            _settingItem("最近阅读", "assets/images/history.png", () {}),
-            _settingItem("整理", "assets/images/entirety.png", () {}),
-            SizedBox(
-              height: 20.h,
-            ),
-            const Divider(height: 1.0, indent: 0.0, color: Colors.grey),
-            Padding(
-              padding: EdgeInsets.only(left: 15.w, top: 15.h),
-              child: Text(
-                "设置",
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: Colors.black87,
-                ),
-                textAlign: TextAlign.left,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _header(() {
+            RouteUtils.push(context, const LoginPage());
+          }),
+          _settingItem("最近阅读", "assets/images/history.png", () {}),
+          _settingItem("整理", "assets/images/entirety.png", () {}),
+          SizedBox(
+            height: 20.h,
+          ),
+          const Divider(height: 1.0, indent: 0.0, color: Colors.grey),
+          Padding(
+            padding: EdgeInsets.only(left: 15.w, top: 15.h),
+            child: Text(
+              "设置",
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: Colors.black87,
               ),
+              textAlign: TextAlign.left,
             ),
-            _settingItem("设置", "assets/images/setting.png", () => {}),
-          ],
-        ),
+          ),
+          _settingItem("设置", "assets/images/setting.png", () => {}),
+        ],
       ),
+      // SafeArea(
+      //   child:
+      // ),
     );
   }
 
@@ -64,9 +65,10 @@ class _SidebarMenuState extends State<SidebarMenu> {
         return authViewModel;
       },
       child: Container(
+        padding: EdgeInsets.only(top: 36.h),
         color: Theme.of(context).colorScheme.primary,
         alignment: Alignment.center,
-        height: 200.h,
+        height: 240.h,
         child: Consumer<AuthViewModel>(
           builder: (context, vm, child) {
             return Column(

@@ -18,7 +18,7 @@ class Routes {
       case RoutePath.registerPage:
         return pageRoute(const RegisterPage(), settings: settings);
       case RoutePath.feedPage:
-        return pageRoute(const FeedPage(), settings: settings);
+        return pageRoute(const FeedPage(rssUrl: '',), settings: settings);
     }
 
     return pageRoute(Scaffold(

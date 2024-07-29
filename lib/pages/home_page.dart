@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rss/common_ui/custom_app_bar.dart';
+import 'package:flutter_rss/common_ui/loading.dart';
 import 'package:flutter_rss/pages/common/sidebar.dart';
 import 'package:flutter_rss/pages/feed/feed_page.dart';
 import 'package:flutter_rss/pages/feed/feed_vm.dart';
 import 'package:flutter_rss/routes/RouteUtils.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:oktoast/oktoast.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,21 +28,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: const Icon(
-                Icons.menu,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+      appBar: CustomAppBar(
         title: Text(
           '订阅',
           style: TextStyle(color: Colors.white, fontSize: 18.sp),
@@ -128,37 +117,57 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('添加订阅源', style: TextStyle(fontSize: 16.sp),),
+                  Text(
+                    '添加订阅源',
+                    style: TextStyle(fontSize: 16.sp),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       _dialogTextButton(text: "粘贴", onTap: _pasteText),
-                      _dialogTextButton(text: "清空", onTap: () {
-                        inputController.clear();
-                      }),
-                      SizedBox(width: 100.w,),
+                      _dialogTextButton(
+                          text: "清空",
+                          onTap: () {
+                            inputController.clear();
+                          }),
+                      SizedBox(
+                        width: 100.w,
+                      ),
                       _dialogTextButton(text: "RSS推荐", onTap: () {}),
-                      const Text("RSS HUB", style: TextStyle(color: Colors.orange),),
+                      const Text(
+                        "RSS HUB",
+                        style: TextStyle(color: Colors.orange),
+                      ),
                     ],
                   ),
-                  TextField(autofocus: true, controller: inputController,
-                  decoration: const InputDecoration(
-                    hintText: "订阅源地址"
-                  ),),
+                  TextField(
+                    autofocus: true,
+                    controller: inputController,
+                    decoration: const InputDecoration(hintText: "订阅源地址"),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      _dialogTextButton(text: "取消", onTap: () {
-                        Navigator.of(context).pop();
-                      }),
+                      _dialogTextButton(
+                          text: "取消",
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          }),
                       SizedBox(width: 20.w),
-                      _dialogTextButton(text: "下一步", onTap: () {
-                        if (inputController.text != "") {
-                          feedViewModel.analysisRssUrl(inputController.text).then((value) {
-                            RouteUtils.push(context, const FeedPage());
-                          });
-                        }
-                      }),
+                      _dialogTextButton(
+                          text: "下一步",
+                          onTap: () {
+                            if (inputController.text != "") {
+                              // Loading.showLoading();
+                              // feedViewModel.analysisRssUrl(inputController.text).then((value) {
+                              //   Loading.dismissAll();
+                              //   RouteUtils.push(context, FeedPage(rssUrl: inputController.text));
+                              // });
+                              RouteUtils.push(context, FeedPage(rssUrl: inputController.text));
+                            } else {
+                              showToast("请输入订阅源链接地址");
+                            }
+                          }),
                     ],
                   )
                 ],
