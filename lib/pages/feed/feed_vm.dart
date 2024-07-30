@@ -23,6 +23,15 @@ class FeedViewModel with ChangeNotifier {
     return null;
   }
 
+Future<bool?> addSubscription(int feedId) async {
+  dynamic callback = await FeedApi.instance.addSubscriptions(feedId);
+  if (callback is bool) {
+    return callback;
+  } else {
+    return true;
+  }
+}
+
   void setRssInfo(
       {String? title, String? url, String? description, String? logoUrl}) {
     rssInfo.title = title;

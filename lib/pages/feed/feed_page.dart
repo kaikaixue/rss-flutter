@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rss/common_ui/custom_app_bar.dart';
 import 'package:flutter_rss/common_ui/loading.dart';
 import 'package:flutter_rss/pages/feed/feed_vm.dart';
+import 'package:flutter_rss/pages/home_page.dart';
+import 'package:flutter_rss/routes/RouteUtils.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
@@ -120,8 +122,8 @@ class _FeedPageState extends State<FeedPage> {
   Widget _bottomWidgets() {
     return Container(
       width: double.infinity,
-      height: 100.h,
-      padding: EdgeInsets.only(right: 24.w, bottom: 24.w),
+      height: 70.h,
+      padding: EdgeInsets.only(right: 24.w, bottom: 12.w),
       color: Theme.of(context).colorScheme.primary,
       child: GestureDetector(
         child: Row(
@@ -140,7 +142,13 @@ class _FeedPageState extends State<FeedPage> {
             )
           ],
         ),
-        onTap: () {},
+        onTap: () {
+          feedViewModel.addSubscription(feedViewModel.feedModel?.feedId).then((value) {
+            if (value == true) {
+              RouteUtils.push(context, const HomePage());
+            }
+          });
+        },
       ),
     );
   }
