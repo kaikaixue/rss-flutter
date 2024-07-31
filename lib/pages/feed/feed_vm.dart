@@ -7,6 +7,8 @@ import 'package:oktoast/oktoast.dart';
 class FeedViewModel with ChangeNotifier {
   FeedModel? feedModel;
   RssInfo rssInfo = RssInfo();
+  int pageCount = 0;
+  List<FeedModel>? feedList = [];
 
   Future<RssInfo?> analysisRssUrl(String url) async {
     if (url.contains("http")) {
@@ -23,14 +25,27 @@ class FeedViewModel with ChangeNotifier {
     return null;
   }
 
-Future<bool?> addSubscription(int feedId) async {
-  dynamic callback = await FeedApi.instance.addSubscriptions(feedId);
-  if (callback is bool) {
-    return callback;
-  } else {
-    return true;
+  Future<bool?> addSubscription(int feedId) async {
+    dynamic callback = await FeedApi.instance.addSubscriptions(feedId);
+    if (callback is bool) {
+      return callback;
+    } else {
+      return true;
+    }
   }
-}
+
+  Future getFeedList(bool loadMore) async {
+    List<FeedModel>? list = await FeedApi.instance.listByFeed(pageCount);
+    if (list != null && list.isNotEmpty) {
+      feedList = list;
+    } else {
+      if (loadMore && pageCount > 0) {
+        pageCount --;
+      }
+      feedList = [];
+    }
+    notifyListeners();
+  }
 
   void setRssInfo(
       {String? title, String? url, String? description, String? logoUrl}) {

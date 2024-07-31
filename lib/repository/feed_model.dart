@@ -12,6 +12,37 @@
 /// updatedAt : null
 /// isRecommended : null
 
+class FeedModelList {
+  FeedModelList({
+    this.total,
+    this.rows
+  });
+
+  FeedModelList.fromJson(dynamic json) {
+    if (json['rows'] != null) {
+      rows = [];
+      json['rows'].forEach((v) {
+        rows?.add(FeedModel.fromJson(v));
+      });
+    }
+    print(111111);
+    print(json);
+    rows = json['rows'].cast<FeedModel>();
+    print(rows);
+  }
+  List<FeedModel>? rows;
+  num? total;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    if (rows != null) {
+      map['rows'] = rows?.map((v) => v.toJson()).toList();
+    }
+    map['total'] = total;
+    return map;
+  }
+}
+
 class FeedModel {
   FeedModel({
       this.createBy, 

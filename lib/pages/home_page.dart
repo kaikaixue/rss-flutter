@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rss/common_ui/custom_app_bar.dart';
 import 'package:flutter_rss/common_ui/loading.dart';
+import 'package:flutter_rss/common_ui/smart_refresh/smart_refresh_widget.dart';
 import 'package:flutter_rss/pages/common/sidebar.dart';
 import 'package:flutter_rss/pages/feed/feed_page.dart';
 import 'package:flutter_rss/pages/feed/feed_vm.dart';
 import 'package:flutter_rss/routes/RouteUtils.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,14 +23,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List feedList = [];
 
   TextEditingController inputController = TextEditingController();
   FeedViewModel feedViewModel = FeedViewModel();
+  RefreshController refreshController = RefreshController();
+
+  @override
+  void initState() {
+    super.initState();
+    Loading.showLoading();
+    refreshOrLoad(false);
+  }
+
+  void refreshOrLoad(bool loadMore) {
+    feedViewModel.getFeedList(loadMore).then((value) {
+      if (loadMore) {
+       refreshController.loadComplete();
+      } else {
+        refreshController.refreshCompleted();
+      }
+      Loading.dismissAll();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ChangeNotifierProvider(create: (context) {
+      return feedViewModel;
+    }, child:
+    Scaffold(
       appBar: CustomAppBar(
         title: Text(
           '订阅',
@@ -43,12 +67,24 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: SafeArea(
-          child: Container(
-        alignment: Alignment.center,
-        child: feedList.length > 0 ? _gridList() : _emptyBox(),
-      )),
+        child: SmartRefreshWidget(
+          controller: refreshController,
+          onLoading: () {
+            refreshOrLoad(true);
+          },
+          onRefresh: () {
+            refreshOrLoad(false);
+          },
+          child: Consumer<FeedViewModel>(builder: (context, vm, child) {
+            return Container(
+              alignment: Alignment.center,
+              child: (vm.feedList?.length ?? 0) > 0 ? _gridList() : _emptyBox(),
+            );
+          },),
+        ),
+      ),
       drawer: const SidebarMenu(),
-    );
+    ),);
   }
 
   Widget _emptyBox() {

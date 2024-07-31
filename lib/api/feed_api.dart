@@ -23,4 +23,13 @@ class FeedApi {
     });
     return response.data;
   }
+
+  Future<List<FeedModel>?> listByFeed(int pageNum, {int? pageSize = 10}) async {
+    Response response = await DioInstance.instance().post(path: "app/feed/listPage", queryParameters: {
+      "pageNum": pageNum,
+      "pageSize": pageSize
+    });
+    FeedModelList feedList = FeedModelList.fromJson(response.data);
+    return feedList.rows;
+  }
 }
